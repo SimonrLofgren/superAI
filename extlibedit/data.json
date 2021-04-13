@@ -1,0 +1,23 @@
+{
+  "info": {
+    "coins": {
+      "address": 8261055,
+      "type": "|u1"
+    },
+    "lives": {
+      "address": 8261054,
+      "type": "|i1"
+    },
+    "score": {
+      "address": 8261428,
+      "type": "<u4"
+    },
+    "death": {
+      "address": 8257688,
+      "type": "<u4"
+    }
+  }
+}
+
+
+# externallibraries/site-packages/retro/data/stable/

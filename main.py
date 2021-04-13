@@ -1,7 +1,7 @@
 import retro
 import random
 import pickle
-from toolbox import printsaved, randomActionFeeder
+from toolbox import printsaved, randomActionFeeder, printButtons
 def runStraight():
     env = retro.make(game='SuperMarioWorld-Snes')
     obs = env.reset()
@@ -61,9 +61,11 @@ def runRandom():
         # obs, rew, done, info = env.step(env.action_space.sample())
 
         obs, rew, done, info = env.step(saved_actions[i])
+        printButtons()
         print(saved_actions[i])
         print(i)
         print(rew)
+        print(info['x'])
         i += 1
         env.render()
         if info['death'] == 0:
@@ -74,13 +76,82 @@ def runRandom():
             obs = env.reset()
     env.close()
 
+
+def runToLearn():
+    learning = True
+    while learning:
+        done = False
+        saved_random_actions = randomActionFeeder(700)
+        env = retro.make(game='SuperMarioWorld-Snes')
+        obs = env.reset()
+        try:
+            with open('mysaved/saved_actions.pkl', 'rb') as f:
+                saved_actions = pickle.load(f)
+        except:
+            saved_actions = randomActionFeeder(300)
+        i = 0
+        running = True
+        while not done:
+
+            # obs, rew, done, info = env.step(env.action_space.sample())
+
+            obs, rew, done, info = env.step(saved_actions[i])
+            print(rew)
+            i += 1
+            env.render()
+
+            if i == len(saved_actions)-2:
+                i = 0
+                while not done:
+                    obs, rew, done, info = env.step(saved_random_actions[i])
+                    print(saved_random_actions[i])
+                    print(i)
+                    print(rew)
+                    print(info['x'])
+                    i += 1
+                    env.render()
+                    if i >= len(saved_random_actions):
+                        done = True
+                    if info['death'] == 0:
+                        print(info['death'])
+                        saved_random_actions = saved_random_actions[0: i-10]
+                        done = True
+                    if done:
+                        try:
+                            saved_actions[-2] = float(saved_actions[-2])
+                        except:
+                            saved_actions.append(rew)
+                            saved_actions.append(info['x'])
+
+                        if info['x'] > saved_actions[-1]:
+                            if rew > saved_actions[-2]:
+                                saved_actions.append(saved_random_actions)
+                                saved_actions.append(rew)
+                                saved_actions.append(info['x'])
+                                with open('mysaved/saved_actions.pkl', 'wb') as f:
+                                    pickle.dump(saved_actions, f)
+                        running = False
+                        obs = env.reset()
+        obs = env.close()
+
+
+        '''if info['death'] == 0:
+            print(info['death'])
+            done = True
+        if done:
+            running = False
+            obs = env.reset()'''
+    #env.close()
+
+
 def main():
 
     print(retro.data.list_games())
     #printsaved()
-    runRandom()
+    #runRandom()
     #run_saved()
     #run_random()
+    runToLearn()
 
 if __name__ == "__main__":
     main()

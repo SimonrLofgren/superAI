@@ -19,3 +19,6 @@ def randomActionFeeder(amount):
     #saved_actions.append(action)
     #action = random.choice([[0, 1, 0, 0, 0, 0, 0, 1], [0, 1, 0, 0, 0, 0, 0, 1]])
     #saved_actions.append(action)
+
+def printButtons():
+    print('A, B, X, Y, U, D, L, R')

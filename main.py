@@ -2,6 +2,7 @@ import retro
 import random
 import pickle
 from toolbox import printsaved, randomActionFeeder, printButtons
+
 def runStraight():
     env = retro.make(game='SuperMarioWorld-Snes')
     obs = env.reset()
@@ -26,11 +27,10 @@ def runStraight():
             obs = env.reset()
 
     env.close()
-
 def run_saved():
     env = retro.make(game='SuperMarioWorld-Snes')
     obs = env.reset()
-    with open('mysaved/saved_actions.pkl', 'rb') as f:
+    with open('winner.pkl', 'rb') as f:
         saved_actions = pickle.load(f)
     i = 0
     running = True
@@ -145,13 +145,8 @@ def runToLearn():
 
 
 def main():
+    run_saved()
 
-    print(retro.data.list_games())
-    #printsaved()
-    #runRandom()
-    #run_saved()
-    #run_random()
-    runToLearn()
 
 if __name__ == "__main__":
     main()
